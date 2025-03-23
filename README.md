@@ -8,7 +8,7 @@
 # 프로젝트 클론
 git clone https://github.com/IdealPeople/graduation-minjok.git
 
-cd minjok
+cd project
 
 # 가상환경(env) 생성
 python3 -m venv env
