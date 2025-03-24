@@ -1,6 +1,13 @@
 import requests
+import os
+from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 
+# .env 파일 로드
+load_dotenv()
+
+wku_user_id = os.getenv("USER_ID")
+wku_user_pwd = os.getenv("USER_PWD")
 # 세션 생성
 session = requests.Session()
 
@@ -13,8 +20,8 @@ headers = {
 
 # 로그인용 데이터
 login_data = {
-    "userid": "웹정보서비스 아이디",      
-    "passwd": "웹정보서비스 비밀번호",
+    "userid": wku_user_id,      
+    "passwd": wku_user_pwd,
     "nextURL": "http://intra.wku.ac.kr/SWupis/V005/loginReturn.jsp"
 }
 
@@ -24,9 +31,14 @@ login_response = session.post(login_url, data=login_data, headers=headers)
 
 if login_response.status_code == 200:
     print("!! 로그인 성공 !!")
+    print("발급된 쿠키 확인")
+
+    print(login_response.cookies)
 else:
     print("!! 로그인 실패 !!")
     exit()
+
+
 
 # wkuTokenKey 쿠키 확보
 wku_token = login_response.cookies.get("wkuTokenKey")
@@ -58,22 +70,54 @@ if score_response.status_code == 200:
 
     # BeautifulSoup으로 파싱
     soup = BeautifulSoup(score_response.text, "html.parser")
-    print(soup.prettify())
+    # print(soup.prettify())
     
-    # 학생 기본 정보 파싱
+    # 1. 학생 기본 정보 파싱
     student_info = {}
     info_table = soup.find_all('table')[0]
     info_rows = info_table.find_all('tr')
+    
+    # 학생 정보 추출
     for row in info_rows:
         th_tags = row.find_all('th')
         td_tags = row.find_all('td')
-    for th, td in zip(th_tags, td_tags):
-        key = th.get_text(strip=True)
-        value = td.get_text(strip=True)
-        student_info[key] = value
-
+        
+        # 각 행에서 th와 td를 묶어서 key, value로 딕셔너리 저장
+        for th, td in zip(th_tags, td_tags):
+            key = th.get_text(strip=True)
+            value = td.get_text(strip=True)
+            student_info[key] = value
+    
     print("============ 학생 기본 정보 ============\n")
     for key, value in student_info.items():
+        print(f"{key} : {value}")
+    print("\n=====================================")
+    
+    # 이수 과목
+    subject_info = {}
+    subject_table = soup.find_all('table')[1]
+    subject_values_row = subject_table.find_all("tr")[2].find_all("td")
+    subject_info_labels = ['교필', '교선', '계필', '계기', '학필', '전기', '전필', '전선', '기전', '선전',
+                           '응전', '학석', '융전', '복수전공', '부전공', '교직', '일선', '편입']
+    
+    for i, label in enumerate(subject_info_labels):
+        subject_info[label] = subject_values_row[i].text.strip()
+    
+    print("============ 이수 과목 정보 ============\n")
+    for key, value in subject_info.items():
+        print(f"{key} : {value}")
+    print("\n=====================================")
+    
+    # 합계
+    summary_info = {}
+    summary_row = subject_table.find_all("tr")[3].find_all("td")
+    summary_info["교양 합계"] = summary_row[0].text.strip()
+    summary_info["전공 합계"] = summary_row[1].text.strip()
+    summary_info["기타 합계"] = summary_row[2].text.strip()
+    summary_info["총계"] = subject_values_row[-1].text.strip()
+    
+    print("============ 합계 정보 ============\n")
+    for key, value in summary_info.items():
         print(f"{key} : {value}")
     print("\n=====================================")
     

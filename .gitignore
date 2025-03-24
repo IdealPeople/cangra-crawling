@@ -1,2 +1,9 @@
 # Python 가상환경 제외
 env/
+
+# 테스트 html 파일
+response.html
+
+# 환경변수(env) 관리
+# 만약 아래에 .env가 없다면 반드시 추가할 것!
+.env

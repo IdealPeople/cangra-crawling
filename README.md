@@ -23,7 +23,33 @@ python3 index.py
 deactivate
 ```
 
-# 인증/인가구조
+## 🛠️ 필수 환경 설정
+
+해당 프로젝트는 주요 정보를 환경변수로 관리하고 있습니다.  
+프로젝트를 클론한 후 아래의 단계를 따라 `.env`파일을 생성한 뒤 설정해주세요!
+
+### 1. .env 파일 생성
+
+프로젝트 루트 디렉터리에 `.env` 파일을 생성하세요.
+
+### 2. .env 파일 설정
+
+`USER_ID`와 `USER_PWD` 값을 아래와 같이 입력해주세요
+
+```bash
+USER_ID=웹정보서비스 아이디
+USER_PWD=웹정보서비스 비밀번호
+
+# 예시
+USER_ID=abcdef
+USER_PWD=thisispwd12
+```
+
+### 3. .env 파일을 git에 포함되지 않게 관리
+
+`.env` 파일은 민감한 정보를 포함합니다. 따라서 `.gitignore`파일에 `.env`가 포함되어 있는지 반드시 확인하세요!
+
+## 인증/인가구조
 
 1. 로그인 POST (auth.wku.ac.kr) - `wkuTokenKey`, `JSESSIONID` 발급 → session 저장
 
