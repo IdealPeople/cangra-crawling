@@ -1,12 +1,10 @@
-# 졸업의 민족
-
-~~우리가 어떤 민족입니까~~
+# Cangra 크롤링 파트
 
 ## 🛠 프로젝트 실행 방법
 
 ```bash
 # 프로젝트 클론
-git clone https://github.com/IdealPeople/graduation-minjok.git
+git clone https://github.com/IdealPeople/cangra-crawling.git
 
 cd project
 
